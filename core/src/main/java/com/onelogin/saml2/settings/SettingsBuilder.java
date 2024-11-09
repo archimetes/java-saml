@@ -81,6 +81,8 @@ public class SettingsBuilder {
 	public final static String SP_CONTACT_SUR_NAME_PROPERTY_KEY_SUFFIX = "sur_name";
 	public final static String SP_CONTACT_EMAIL_ADDRESS_PROPERTY_KEY_PREFIX = "email_address";
 	public final static String SP_CONTACT_TELEPHONE_NUMBER_PROPERTY_KEY_PREFIX = "telephone_number";
+	public final static String SP_X509CERT_ENC_PROPERTY_KEY = "onelogin.saml2.sp.x509cert_enc";
+	public final static String SP_PRIVATEKEY_ENC_PROPERTY_KEY = "onelogin.saml2.sp.privatekey_enc";
 
 	// KeyStore
 	public final static String KEYSTORE_KEY = "onelogin.saml2.keystore.store";
@@ -738,6 +740,8 @@ public class SettingsBuilder {
 
 		X509Certificate spX509cert;
 		PrivateKey spPrivateKey;
+		X509Certificate spX509cert_enc;
+		PrivateKey spPrivateKey_enc;
 
 		if (keyStoreEnabled) {
 			KeyStore ks = (KeyStore) this.samlData.get(KEYSTORE_KEY);
@@ -746,9 +750,13 @@ public class SettingsBuilder {
 
 			spX509cert = getCertificateFromKeyStore(ks, alias, password);
 			spPrivateKey = getPrivateKeyFromKeyStore(ks, alias, password);
+			spX509cert_enc = null;
+			spPrivateKey_enc = null;
 		} else {
 			spX509cert = loadCertificateFromProp(SP_X509CERT_PROPERTY_KEY);
 			spPrivateKey = loadPrivateKeyFromProp(SP_PRIVATEKEY_PROPERTY_KEY);
+			spX509cert_enc = loadCertificateFromProp(SP_X509CERT_ENC_PROPERTY_KEY);
+			spPrivateKey_enc = loadPrivateKeyFromProp(SP_PRIVATEKEY_ENC_PROPERTY_KEY);
 		}
 
 		if (spX509cert != null) {
@@ -761,6 +769,12 @@ public class SettingsBuilder {
 		X509Certificate spX509certNew = loadCertificateFromProp(SP_X509CERTNEW_PROPERTY_KEY);
 		if (spX509certNew != null) {
 			saml2Setting.setSpX509certNew(spX509certNew);
+		}
+		if (spX509cert_enc != null) {
+			saml2Setting.setSpX509cert_enc(spX509cert_enc);
+		}
+		if (spPrivateKey_enc != null) {
+			saml2Setting.setSpPrivateKey_enc(spPrivateKey_enc);
 		}
 	}
 

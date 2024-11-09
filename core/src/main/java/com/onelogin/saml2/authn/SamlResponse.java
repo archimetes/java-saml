@@ -457,7 +457,7 @@ public class SamlResponse {
 			NodeList encryptedDataNodes = this.queryAssertion("/saml:Subject/saml:EncryptedID/xenc:EncryptedData");
 			if (encryptedDataNodes.getLength() == 1) {
 				Element encryptedData = (Element) encryptedDataNodes.item(0);
-				PrivateKey key = settings.getSPkey();
+				PrivateKey key = settings.getSPkey_enc();
 				if (key == null) {
 					throw new SettingsException("Key is required in order to decrypt the NameID", SettingsException.PRIVATE_KEY_NOT_FOUND);
 				}
@@ -1196,7 +1196,7 @@ public class SamlResponse {
 	 * @throws ValidationError
 	 */
 	private Document decryptAssertion(Document dom) throws XPathExpressionException, ParserConfigurationException, SAXException, IOException, SettingsException, ValidationError {
-		PrivateKey key = settings.getSPkey();
+		PrivateKey key = settings.getSPkey_enc();
 
 		HSM hsm = this.settings.getHsm();
 

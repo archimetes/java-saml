@@ -464,7 +464,7 @@ public class LogoutRequest {
 				}
 
 				// Try get the nameID
-				String nameID = getNameId(logoutRequestDocument, settings.getSPkey(), settings.isTrimNameIds());
+				String nameID = getNameId(logoutRequestDocument, settings.getSPkey_enc(), settings.isTrimNameIds());
 
 				// Check the issuer
 				String issuer = getIssuer(logoutRequestDocument, settings.isTrimNameIds());

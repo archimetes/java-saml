@@ -49,6 +49,8 @@ public class Saml2Settings {
 	private X509Certificate spX509certNew = null;
 	private PrivateKey spPrivateKey = null;
 	private HSM hsm = null;
+	private X509Certificate spX509cert_enc = null;
+	private PrivateKey spPrivateKey_enc = null;
 
 	// IdP
 	private String idpEntityId = "";
@@ -179,6 +181,13 @@ public class Saml2Settings {
 	 */
 	public final PrivateKey getSPkey() {
 		return spPrivateKey;
+	}
+
+	public final X509Certificate getSPcert_enc() {
+		return spX509cert_enc==null?spX509cert:spX509cert_enc;
+	}
+	public final PrivateKey getSPkey_enc() {
+		return spPrivateKey_enc==null?spPrivateKey:spPrivateKey_enc;
 	}
 
 	/**
@@ -532,6 +541,13 @@ public class Saml2Settings {
 	 */
 	protected final void setSpPrivateKey(PrivateKey spPrivateKey) {
 		this.spPrivateKey = spPrivateKey;
+	}
+
+	protected final void setSpX509cert_enc(X509Certificate spX509cert_enc) {
+		this.spX509cert_enc = spX509cert_enc;
+	}
+	protected final void setSpPrivateKey_enc(PrivateKey spPrivateKey_enc) {
+		this.spPrivateKey_enc = spPrivateKey_enc;
 	}
 
 	/**
@@ -1011,7 +1027,7 @@ public class Saml2Settings {
 		}
 
 		if (this.getHsm() == null && (this.getAuthnRequestsSigned() || this.getLogoutRequestSigned()
-			|| this.getLogoutResponseSigned() || this.getWantAssertionsEncrypted() || this.getWantNameIdEncrypted()) && !this.checkSPCerts()) {
+			|| this.getLogoutResponseSigned() || this.getWantAssertionsEncrypted() || this.getWantNameIdEncrypted()) && !this.checkSPCerts() && !this.checkSPCerts_enc()) {
 			errorMsg = "sp_cert_not_found_and_required";
 			errors.add(errorMsg);
 			LOGGER.error(errorMsg);
@@ -1070,6 +1086,12 @@ public class Saml2Settings {
 		X509Certificate cert = getSPcert();
 		PrivateKey key = getSPkey();
 
+		return (cert != null && key != null);
+	}
+
+	public boolean checkSPCerts_enc() {
+		X509Certificate cert = getSPcert_enc();
+		PrivateKey key = getSPkey_enc();
 		return (cert != null && key != null);
 	}
 

@@ -171,7 +171,7 @@ public class Metadata {
 
 		valueMap.put("strAttributeConsumingService", getAttributeConsumingServiceXml());
 
-		valueMap.put("strKeyDescriptor", toX509KeyDescriptorsXML(settings.getSPcert(), settings.getSPcertNew(), wantsEncrypted));
+		valueMap.put("strKeyDescriptor", toX509KeyDescriptorsXML(settings.getSPcert(), settings.getSPcertNew(),settings.getSPcert_enc(), wantsEncrypted));
 
 		valueMap.put("strContacts", toContactsXml(settings.getContacts()));
 		valueMap.put("strOrganization", toOrganizationXml(settings.getOrganization()));
@@ -317,15 +317,6 @@ public class Metadata {
 		return orgXml;
 	}
 
-	/**
-	 * Generates the KeyDescriptor section of the metadata's template
-	 * @param cert the public cert that will be used by the SP to sign and encrypt
-	 * @param wantsEncrypted Whether to include the KeyDescriptor for encryption
-	 * @return the KeyDescriptor section of the metadata's template
-	 */
-	private String toX509KeyDescriptorsXML(X509Certificate cert, Boolean wantsEncrypted) throws CertificateEncodingException {
-		return this.toX509KeyDescriptorsXML(cert, null, wantsEncrypted);
-	}
 
 	/**
 	 * Generates the KeyDescriptor section of the metadata's template
@@ -336,7 +327,7 @@ public class Metadata {
 	 *
 	 * @return the KeyDescriptor section of the metadata's template
 	 */
-	private String toX509KeyDescriptorsXML(X509Certificate certCurrent, X509Certificate certNew, Boolean wantsEncrypted) throws CertificateEncodingException {
+	private String toX509KeyDescriptorsXML(X509Certificate certCurrent, X509Certificate certNew, X509Certificate certCurrent_enc, Boolean wantsEncrypted) throws CertificateEncodingException {
 		StringBuilder keyDescriptorXml = new StringBuilder();
 
 		List<X509Certificate> certs = Arrays.asList(certCurrent, certNew);
@@ -345,6 +336,8 @@ public class Metadata {
 	            Base64 encoder = new Base64(64);
 	            byte[] encodedCert = cert.getEncoded();
 	            String certString = new String(encoder.encode(encodedCert));
+				byte[] encodedCert_enc = certCurrent_enc.getEncoded();
+				String certString_enc = new String(encoder.encode(encodedCert_enc));
 
 	            keyDescriptorXml.append("<md:KeyDescriptor use=\"signing\">");
 	            keyDescriptorXml.append("<ds:KeyInfo xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\">");
@@ -358,7 +351,7 @@ public class Metadata {
 	                keyDescriptorXml.append("<md:KeyDescriptor use=\"encryption\">");
 	                keyDescriptorXml.append("<ds:KeyInfo xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\">");
 	                keyDescriptorXml.append("<ds:X509Data>");
-	                keyDescriptorXml.append("<ds:X509Certificate>"+certString+"</ds:X509Certificate>");
+					keyDescriptorXml.append("<ds:X509Certificate>"+certString_enc+"</ds:X509Certificate>");
 	                keyDescriptorXml.append("</ds:X509Data>");
 	                keyDescriptorXml.append("</ds:KeyInfo>");
 	                keyDescriptorXml.append("</md:KeyDescriptor>");

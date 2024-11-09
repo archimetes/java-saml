@@ -1372,7 +1372,7 @@ public class Auth {
 	 * @throws Exception
 	 */
 	public void processSLO(Boolean keepLocalSession, String requestId) throws Exception {
-		processSLO(keepLocalSession, requestId, false);
+ 		processSLO(keepLocalSession, requestId, false);
 	}
 
 	/**
